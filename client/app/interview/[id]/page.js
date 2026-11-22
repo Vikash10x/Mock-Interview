@@ -19,7 +19,6 @@ export default function InterviewRoom() {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(true);
-  const [autoRead, setAutoRead] = useState(true);
 
   // Advanced AI Features States
   const [cameraActive, setCameraActive] = useState(false);
@@ -71,14 +70,6 @@ export default function InterviewRoom() {
       })
       .catch((e) => setError(e.message));
   }, [id, router]);
-
-  // Read question aloud when it loads
-  useEffect(() => {
-    if (question && autoRead && !feedback) {
-      speakQuestion(question);
-    }
-    return () => stopSpeaking();
-  }, [question, autoRead, feedback, speakQuestion, stopSpeaking]);
 
   // Setup Speech Recognition (STT)
   useEffect(() => {
@@ -279,24 +270,14 @@ export default function InterviewRoom() {
       <section className="panel">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
           <p className="muted" style={{ margin: 0 }}>Question {index + 1} of {total}</p>
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <label className="auto-read-label">
-              <input
-                type="checkbox"
-                checked={autoRead}
-                onChange={(e) => setAutoRead(e.target.checked)}
-              />
-              Auto-read
-            </label>
-            <button
-              className={`speaker-btn ${isSpeaking ? "active" : ""}`}
-              onClick={() => (isSpeaking ? stopSpeaking() : speakQuestion(question))}
-              title={isSpeaking ? "Stop speaking" : "Listen to question"}
-              type="button"
-            >
-              {isSpeaking ? "⏹️ Stop" : "🔊 Listen"}
-            </button>
-          </div>
+          <button
+            className={`speaker-btn ${isSpeaking ? "active" : ""}`}
+            onClick={() => (isSpeaking ? stopSpeaking() : speakQuestion(question))}
+            title={isSpeaking ? "Stop speaking" : "Listen to question"}
+            type="button"
+          >
+            {isSpeaking ? "⏹️ Stop" : "🔊 Listen"}
+          </button>
         </div>
 
         <p className="question">{question || "Loading…"}</p>

@@ -124,22 +124,6 @@ textarea { min-height: 140px; resize: vertical; }
   font-weight: 600;
 }
 
-.auto-read-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
-  color: var(--muted);
-  font-weight: normal;
-  margin: 0;
-  cursor: pointer;
-}
-.auto-read-label input {
-  width: auto;
-  margin: 0;
-  cursor: pointer;
-}
-
 /* Video Camera Box */
 .camera-container {
   display: flex;
