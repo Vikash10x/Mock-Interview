@@ -1,9 +1,25 @@
 const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-async function req(path, options) {
+// Har user ka apna private unique identifier generate karna
+export function getUserId() {
+  if (typeof window === "undefined") return "anon";
+  let uid = localStorage.getItem("mock_user_id");
+  if (!uid) {
+    uid = "usr_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now();
+    localStorage.setItem("mock_user_id", uid);
+  }
+  return uid;
+}
+
+async function req(path, options = {}) {
+  const userId = getUserId();
   const res = await fetch(`${BASE}/api/interview${path}`, {
-    headers: { "Content-Type": "application/json" },
     ...options,
+    headers: {
+      "Content-Type": "application/json",
+      "x-user-id": userId,
+      ...(options.headers || {}),
+    },
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `Request failed with status ${res.status}`);

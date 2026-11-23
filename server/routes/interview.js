@@ -17,6 +17,8 @@ router.post("/start", async (req, res, next) => {
     } = req.body;
     if (!role) return res.status(400).json({ error: "role is required" });
 
+    const userId = req.headers["x-user-id"] || req.body.userId || "anonymous";
+
     const question = await generateQuestion({
       role,
       difficulty,
@@ -26,6 +28,7 @@ router.post("/start", async (req, res, next) => {
       turns: [],
     });
     const interview = await Interview.create({
+      userId,
       role,
       difficulty,
       language,
@@ -109,10 +112,14 @@ router.post("/:id/hint", async (req, res, next) => {
   }
 });
 
-// History list
-router.get("/", async (_req, res, next) => {
+// History list - user-specific private history
+router.get("/", async (req, res, next) => {
   try {
-    const list = await Interview.find({}, "role difficulty status summary.overallScore createdAt")
+    const userId = req.headers["x-user-id"] || req.query.userId;
+    // Only return interviews matching this specific user
+    const filter = userId ? { userId } : { _id: null };
+
+    const list = await Interview.find(filter, "role difficulty status summary.overallScore createdAt")
       .sort({ createdAt: -1 })
       .limit(30);
     res.json(list);

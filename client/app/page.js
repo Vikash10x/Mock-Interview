@@ -116,7 +116,22 @@ export default function Setup() {
 
       {history.length > 0 && (
         <section className="history" style={{ marginTop: 44 }}>
-          <h2>Performance Analytics & History</h2>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 10 }}>
+            <h2 style={{ margin: 0 }}>🔒 Your Private History & Analytics</h2>
+            <button
+              type="button"
+              className="speaker-btn"
+              style={{ fontSize: "0.8rem" }}
+              onClick={() => {
+                if (window.confirm("Are you sure you want to clear your local interview history on this device?")) {
+                  localStorage.removeItem("mock_user_id");
+                  setHistory([]);
+                }
+              }}
+            >
+              🗑️ Clear My History
+            </button>
+          </div>
 
           {/* Quick Metrics Cards */}
           <div className="analytics-grid">

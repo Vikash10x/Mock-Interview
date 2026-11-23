@@ -16,6 +16,7 @@ const turnSchema = new mongoose.Schema(
 
 const interviewSchema = new mongoose.Schema(
   {
+    userId: { type: String, default: "anonymous", index: true },
     role: { type: String, required: true },
     difficulty: { type: String, default: "medium" },
     language: { type: String, default: "English" },
