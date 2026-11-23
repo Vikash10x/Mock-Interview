@@ -213,6 +213,31 @@ export default function InterviewRoom() {
     }
   }
 
+  async function skipQuestion() {
+    if (loading) return;
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
+    stopSpeaking();
+    setLoading(true);
+    setError("");
+    try {
+      const skipMessage =
+        language === "Hindi"
+          ? "मुझे इस सवाल का जवाब नहीं पता, कृपया अगले सवाल पर चलें।"
+          : language === "Hinglish"
+          ? "Mujhe iska answer nahi pata, please skip to next question."
+          : "I don't know the answer to this question. Skipping.";
+
+      setFeedback(await sendAnswer(id, skipMessage));
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function next() {
     stopSpeaking();
     setHint("");
@@ -339,10 +364,21 @@ export default function InterviewRoom() {
               spellCheck={!isCodeMode}
             />
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
-              <button className="btn" onClick={submit} disabled={loading || !answer.trim()}>
-                {loading ? "Evaluating…" : "Submit answer"}
-              </button>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
+              <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                <button className="btn" onClick={submit} disabled={loading || !answer.trim()}>
+                  {loading ? "Evaluating…" : "Submit answer"}
+                </button>
+                <button
+                  type="button"
+                  className="btn ghost"
+                  onClick={skipQuestion}
+                  disabled={loading}
+                  title="Skip this question if you don't know the answer"
+                >
+                  ⏭️ Skip Question
+                </button>
+              </div>
 
               {!hint && (
                 <button
