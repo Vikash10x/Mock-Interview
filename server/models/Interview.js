@@ -21,6 +21,7 @@ const interviewSchema = new mongoose.Schema(
     difficulty: { type: String, default: "medium" },
     language: { type: String, default: "English" },
     totalQuestions: { type: Number, default: 5 },
+    isTimed: { type: Boolean, default: false },
     resume: { type: String, default: "" },
     jobDescription: { type: String, default: "" },
     turns: [turnSchema],

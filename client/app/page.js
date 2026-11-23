@@ -14,6 +14,7 @@ export default function Setup() {
   const [difficulty, setDifficulty] = useState("medium");
   const [language, setLanguage] = useState("English");
   const [totalQuestions, setTotal] = useState(5);
+  const [isTimed, setIsTimed] = useState(false);
   const [resume, setResume] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -34,6 +35,7 @@ export default function Setup() {
         difficulty,
         language,
         totalQuestions,
+        isTimed,
         resume,
         jobDescription,
       });
@@ -69,6 +71,26 @@ export default function Setup() {
           {LANGS.map((l) => (
             <button key={l} className="chip" aria-pressed={language === l} onClick={() => setLanguage(l)}>{l}</button>
           ))}
+        </div>
+
+        <label>Interview Mode</label>
+        <div className="chips">
+          <button
+            type="button"
+            className="chip"
+            aria-pressed={!isTimed}
+            onClick={() => setIsTimed(false)}
+          >
+            🌱 Relaxed Mode (No Timer)
+          </button>
+          <button
+            type="button"
+            className="chip"
+            aria-pressed={isTimed}
+            onClick={() => setIsTimed(true)}
+          >
+            ⏱️ Timed Mode (2 min / question)
+          </button>
         </div>
 
         <label htmlFor="count">Number of questions: {totalQuestions}</label>

@@ -26,6 +26,10 @@ export default function InterviewRoom() {
   const [hint, setHint] = useState("");
   const [hintLoading, setHintLoading] = useState(false);
 
+  // Timed Mode States
+  const [isTimed, setIsTimed] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(120); // 120 seconds per question
+
   const recognitionRef = useRef(null);
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -63,6 +67,7 @@ export default function InterviewRoom() {
       .then((iv) => {
         if (iv.status === "done") return router.replace(`/report/${id}`);
         setLanguage(iv.language || "English");
+        setIsTimed(Boolean(iv.isTimed));
         setTotal(iv.totalQuestions);
         setIndex(iv.turns.length - 1);
         const currentQ = iv.turns[iv.turns.length - 1].question;
@@ -70,6 +75,35 @@ export default function InterviewRoom() {
       })
       .catch((e) => setError(e.message));
   }, [id, router]);
+
+  // Timed Mode Countdown hook (2 minutes per question)
+  useEffect(() => {
+    if (!isTimed || feedback || loading || !question) return;
+
+    setTimeLeft(120);
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isTimed, question, feedback, loading]);
+
+  // Auto-submit or skip when time runs out
+  useEffect(() => {
+    if (isTimed && timeLeft === 0 && !feedback && !loading && question) {
+      if (answer.trim()) {
+        submit();
+      } else {
+        skipQuestion();
+      }
+    }
+  }, [timeLeft, isTimed, feedback, loading, question]);
 
   // Setup Speech Recognition (STT)
   useEffect(() => {
@@ -294,7 +328,19 @@ export default function InterviewRoom() {
 
       <section className="panel">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <p className="muted" style={{ margin: 0 }}>Question {index + 1} of {total}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <p className="muted" style={{ margin: 0 }}>Question {index + 1} of {total}</p>
+            {isTimed && !feedback && (
+              <span
+                className={`timer-badge ${
+                  timeLeft <= 15 ? "urgent" : timeLeft <= 40 ? "warning" : ""
+                }`}
+                title="Time remaining for this question"
+              >
+                ⏱️ {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, "0")}
+              </span>
+            )}
+          </div>
           <button
             className={`speaker-btn ${isSpeaking ? "active" : ""}`}
             onClick={() => (isSpeaking ? stopSpeaking() : speakQuestion(question))}

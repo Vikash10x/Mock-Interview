@@ -65,6 +65,33 @@ textarea { min-height: 140px; resize: vertical; }
   flex-wrap: wrap;
   gap: 10px;
 }
+
+/* Timer Badge */
+.timer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #f8fafc;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  transition: all 0.2s ease;
+}
+.timer-badge.warning {
+  background: #fefce8;
+  border-color: #fef08a;
+  color: #854d0e;
+}
+.timer-badge.urgent {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+  animation: pulse-ring 1.2s infinite;
+}
 .mic-btn {
   display: inline-flex;
   align-items: center;

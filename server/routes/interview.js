@@ -12,6 +12,7 @@ router.post("/start", async (req, res, next) => {
       difficulty = "medium",
       language = "English",
       totalQuestions = 5,
+      isTimed = false,
       resume = "",
       jobDescription = "",
     } = req.body;
@@ -32,6 +33,7 @@ router.post("/start", async (req, res, next) => {
       role,
       difficulty,
       language,
+      isTimed: Boolean(isTimed),
       resume,
       jobDescription,
       totalQuestions: Math.min(Math.max(Number(totalQuestions), 1), 10),
