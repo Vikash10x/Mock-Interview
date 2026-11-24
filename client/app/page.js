@@ -50,18 +50,8 @@ export default function Setup() {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-        <div>
-          <h1>Practice the interview before it counts.</h1>
-          <p className="lead" style={{ margin: "0 0 28px" }}>Pick a role. You get one question at a time, a score on every answer, and a full report at the end.</p>
-        </div>
-        {visitorCount !== null && (
-          <div className="visitor-badge" title="Total Website Visits" style={{ marginTop: 6 }}>
-            <span className="visitor-badge-label">Visitors</span>
-            <span className="visitor-badge-count">{visitorCount.toLocaleString()}</span>
-          </div>
-        )}
-      </div>
+      <h1>Practice the interview before it counts.</h1>
+      <p className="lead">Pick a role. You get one question at a time, a score on every answer, and a full report at the end.</p>
 
       <section className="panel">
         <label>Role</label>
