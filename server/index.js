@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import interviewRoutes from "./routes/interview.js";
+import Visitor from "./models/Visitor.js";
 
 const app = express();
 app.use(
@@ -17,6 +18,31 @@ app.use(
 app.use(express.json({ limit: "1mb" }));
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
+
+// Live unique visitor counter
+app.get("/api/visitor", async (req, res) => {
+  try {
+    const isNew = req.query.new === "1";
+    let doc;
+    if (isNew) {
+      doc = await Visitor.findOneAndUpdate(
+        { key: "site_visits" },
+        { $inc: { count: 1 } },
+        { new: true, upsert: true }
+      );
+    } else {
+      doc = await Visitor.findOne({ key: "site_visits" });
+      if (!doc) {
+        doc = await Visitor.create({ key: "site_visits", count: 1 });
+      }
+    }
+    res.json({ count: doc.count });
+  } catch (err) {
+    console.error("Visitor counter error:", err);
+    res.json({ count: 1 });
+  }
+});
+
 app.use("/api/interview", interviewRoutes);
 
 // central error handler

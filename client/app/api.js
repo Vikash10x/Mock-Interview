@@ -31,3 +31,15 @@ export const sendAnswer = (id, answer) => req(`/${id}/answer`, { method: "POST",
 export const getHint = (id) => req(`/${id}/hint`, { method: "POST" });
 export const getInterview = (id) => req(`/${id}`);
 export const getHistory = () => req("");
+
+export async function getVisitorCount() {
+  const isNew = typeof window !== "undefined" && !sessionStorage.getItem("mock_visited") ? "1" : "0";
+  if (typeof window !== "undefined") sessionStorage.setItem("mock_visited", "true");
+  try {
+    const res = await fetch(`${BASE}/api/visitor?new=${isNew}`);
+    const data = await res.json().catch(() => ({}));
+    return data.count || null;
+  } catch (_) {
+    return null;
+  }
+}

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { startInterview, getHistory } from "./api";
+import { startInterview, getHistory, getVisitorCount } from "./api";
 
 const ROLES = ["Frontend Developer", "Backend Developer", "Full Stack Developer", "DSA / Problem Solving", "Data Analyst", "HR Round"];
 const LEVELS = ["easy", "medium", "hard"];
@@ -21,9 +21,11 @@ export default function Setup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [history, setHistory] = useState([]);
+  const [visitorCount, setVisitorCount] = useState(null);
 
   useEffect(() => {
     getHistory().then(setHistory).catch(() => {});
+    getVisitorCount().then(setVisitorCount).catch(() => {});
   }, []);
 
   async function begin() {
@@ -48,8 +50,18 @@ export default function Setup() {
 
   return (
     <>
-      <h1>Practice the interview before it counts.</h1>
-      <p className="lead">Pick a role. You get one question at a time, a score on every answer, and a full report at the end.</p>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+        <div>
+          <h1>Practice the interview before it counts.</h1>
+          <p className="lead" style={{ margin: "0 0 28px" }}>Pick a role. You get one question at a time, a score on every answer, and a full report at the end.</p>
+        </div>
+        {visitorCount !== null && (
+          <div className="visitor-badge" title="Total Website Visits" style={{ marginTop: 6 }}>
+            <span className="visitor-badge-label">Visitors</span>
+            <span className="visitor-badge-count">{visitorCount.toLocaleString()}</span>
+          </div>
+        )}
+      </div>
 
       <section className="panel">
         <label>Role</label>
@@ -260,6 +272,18 @@ export default function Setup() {
           ))}
         </section>
       )}
+
+      <footer style={{ marginTop: 44, textAlign: "center", borderTop: "1px solid var(--line)", paddingTop: 20 }}>
+        <p className="muted" style={{ fontSize: "0.85rem", margin: "0 0 10px" }}>
+          AI Mock Interviewer &bull; Next.js &bull; Express &bull; Gemini AI
+        </p>
+        {visitorCount !== null && (
+          <div className="visitor-badge" title="Total Website Visits">
+            <span className="visitor-badge-label">Visitors</span>
+            <span className="visitor-badge-count">{visitorCount.toLocaleString()}</span>
+          </div>
+        )}
+      </footer>
     </>
   );
 }
